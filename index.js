@@ -4,14 +4,25 @@ import Router from 'koa-router'
 import koaBody from 'koa-body'
 import serve from 'koa-static'
 import fs from 'fs'
-import os from 'os'
 import path from 'path'
+
+const IMAGES_DIR = path.join(__dirname, './images')
 
 const app = new Koa()
 const router = new Router()
 
+fs.access(IMAGES_DIR, fs.constants.F_OK | fs.constants.W_OK, err => {
+  if (err && err.code === 'ENOENT') {
+    fs.mkdirSync(IMAGES_DIR)
+  } else if (err) {
+    console.error(`${IMAGES_DIR} is read-only`)
+  }
+})
+
+app.use(koaBody({ multipart: true }))
+
 app.on('error', err => {
-  console.error('server error', err)
+  console.log('server error', err)
 })
 
 app.use(async (ctx, next) => {
@@ -24,7 +35,7 @@ app.use(async (ctx, next) => {
   }
 })
 
-// CORS
+// CORS's needs
 app.use(async (ctx, next) => {
   ctx.set('Access-Control-Allow-Origin', '*')
   ctx.set('Access-Control-Allow-Methods', 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH')
@@ -32,14 +43,24 @@ app.use(async (ctx, next) => {
   await next()
 })
 
-app.use(serve(path.join(__dirname, '/public')))
+// accept CORS preflight request
+router.options('/', ctx => {
+  ctx.status = 200
+})
 
-router.post('/image', koaBody({ multipart: true }), async ctx => {
-  const file = ctx.request.files.file;
-  const reader = fs.createReadStream(file.path);
-  const stream = fs.createWriteStream(path.join(os.tmpdir(), Math.random().toString()));
-  reader.pipe(stream);
-  console.log('uploading %s -> %s', file.name, stream.path);
+router.put('/image', koaBody(), async ctx => {
+  const files = ctx.request.files
+  if (!files) {
+    ctx.throw(400, `no image sent!`)
+  }
+  const file = files[Object.keys(files)[0]]
+  if (!file.type.startsWith('image/')) {
+    ctx.throw(415, 'images only!')
+  }
+  const reader = fs.createReadStream(file.path)
+  const stream = fs.createWriteStream(path.join(IMAGES_DIR, Math.random().toString()))
+  reader.pipe(stream)
+  console.log('uploading %s -> %s', file.name, stream.path)
   ctx.status = 200
 })
 
