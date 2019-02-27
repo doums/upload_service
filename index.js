@@ -19,8 +19,6 @@ fs.access(IMAGES_DIR, fs.constants.F_OK | fs.constants.W_OK, err => {
   }
 })
 
-app.use(koaBody({ multipart: true }))
-
 app.on('error', err => {
   console.log('server error', err)
 })
@@ -48,23 +46,48 @@ router.options('/', ctx => {
   ctx.status = 200
 })
 
-router.put('/image', koaBody(), async ctx => {
+router.put('/image', koaBody({ multipart: true }), ctx => {
   const files = ctx.request.files
   if (!files) {
-    ctx.throw(400, `no image sent!`)
+    ctx.throw(400, 'no image sent!')
   }
   const file = files[Object.keys(files)[0]]
   if (!file.type.startsWith('image/')) {
     ctx.throw(415, 'images only!')
   }
   const reader = fs.createReadStream(file.path)
-  const stream = fs.createWriteStream(path.join(IMAGES_DIR, Math.random().toString()))
+  const stream = fs.createWriteStream(path.join(IMAGES_DIR, file.name))
   reader.pipe(stream)
   console.log('uploading %s -> %s', file.name, stream.path)
-  ctx.status = 200
+  ctx.status = 201
+})
+
+/* todo replace by http method DELETE (router.del(...)) when koa-body will have fixed it
+    see https://github.com/dlau/koa-body/issues/133 */
+router.post('/image', koaBody(), ctx => {
+  if (ctx.is('json')) {
+    const { name } = ctx.request.body
+    if (!name) {
+      ctx.throw(400, 'expected payload: { name: "image_name" }')
+    }
+    try {
+      fs.unlinkSync(`${IMAGES_DIR}/${name}`, err => {
+        if (err) {
+          ctx.throw(500, `error while deleting file "${name}"`)
+        }
+      })
+    } catch (e) {
+      if (e.code !== 'ENOENT') {
+        ctx.throw(500, `error while deleting file "${name}"`)
+      }
+    }
+    ctx.status = 200
+  } else {
+    ctx.throw(415, 'json only!')
+  }
 })
 
 app
   .use(router.routes())
   .use(router.allowedMethods())
-  .listen(2001, () => console.log('upload service starts listening to port 2001'))
+  .listen(2001, () => console.log('listening on port 2001'))
