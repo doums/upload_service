@@ -8,6 +8,8 @@ import path from 'path'
 import uuidv4 from 'uuid/v4'
 
 const IMAGES_DIR = path.join(__dirname, './images')
+const HOSTNAME = 'http://localhost:2001'
+const PORT = 2001
 
 const app = new Koa()
 const router = new Router()
@@ -70,7 +72,7 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
     ctx.throw(500, `error occurred while uploading: ${e.message()}"`)
   }
   ctx.status = 201
-  ctx.body = { url: imageName }
+  ctx.body = { url: `${HOSTNAME}/${imageName}` }
 })
 
 /* todo replace by http method DELETE (router.del(...)) when koa-body will have fixed it
@@ -101,4 +103,4 @@ router.post('/image', koaBody(), ctx => {
 app
   .use(router.routes())
   .use(router.allowedMethods())
-  .listen(2001, () => console.log('listening on port 2001'))
+  .listen(PORT, () => console.log(`listening on port ${PORT}`))

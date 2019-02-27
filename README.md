@@ -1,4 +1,4 @@
-#### micro service image
+### micro service image
 
 a simple micro service built with [Koa](https://koajs.com/), for image upload and serving
 
@@ -52,10 +52,12 @@ uploadImage = async () => {
   const formData = new FormData()
   formData.append('image', image)
   try {
-    await fetch('http://localhost:2001/image', {
+    const response = await fetch('http://localhost:2001/image', {
       method: 'PUT',
       body: formData
     })
+    const { url } = await response.json()
+    // do some stuff with the image's url
   } catch (e) {
     console.error(e)
   }
