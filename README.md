@@ -1,8 +1,8 @@
-### imaKoa
+## imaKoa
 
- :mount_fuji:   a simple micro service built with [Koa](https://koajs.com/), for image upload and serving    :mount_fuji:
+###### :mount_fuji: a simple micro service built with [Koa](https://koajs.com/), for image upload and serving :mount_fuji:
 
-**Usage**
+#### Usage
 
 run for development
 ```
@@ -19,7 +19,7 @@ run for production
 npm run serve
 ```
 
-**API**
+#### API
 
 * get
 ```
@@ -43,7 +43,7 @@ Content-Type: application/json
 body: { url: "image_url" }
 ```
 
-**Example**
+#### Example
 
 the following examples use [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 
