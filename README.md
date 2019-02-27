@@ -1,8 +1,25 @@
 #### micro service image
 
-Simple micro service built with [Koa](https://koajs.com/), for image upload and serving.
+a simple micro service built with [Koa](https://koajs.com/), for image upload and serving
 
 **Usage**
+
+run for development
+```
+npm start
+```
+
+build for production
+```
+npm run build
+```
+
+run for production
+```
+npm run serve
+```
+
+**Description**
 
 get
 ```
