@@ -45,10 +45,11 @@ body: { url: "image_url" }
 
 **Example**
 
-upload an image using [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+the following examples use [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+upload an image from a [File](https://developer.mozilla.org/en-US/docs/Web/API/File)
 ```javascript
-uploadImage = async () => {
-  const image = this.fileInputRef.current.files[0] // File
+uploadImage = async image => {     // image typeof File
   const formData = new FormData()
   formData.append('image', image)
   try {
@@ -58,6 +59,23 @@ uploadImage = async () => {
     })
     const { url } = await response.json()
     // do some stuff with the image's url
+  } catch (e) {
+    console.error(e)
+  }
+}
+```
+
+delete an image from its url
+```javascript
+deleteImage = async url => {
+  try {
+    await fetch('http://localhost:2001/image', {
+      method: 'POST',
+      body: JSON.stringify({ url: url }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
   } catch (e) {
     console.error(e)
   }
