@@ -40,7 +40,7 @@ delete (`POST` method will be replaced by `DELETE` as soon as [koa-body](https:/
 ```
 HTTP POST host/image
 Content-Type: application/json
-body: { name: "image_name" }
+body: { url: "image_url" }
 ```
 
 **Example**

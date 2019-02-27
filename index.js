@@ -79,19 +79,20 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
     see https://github.com/dlau/koa-body/issues/133 */
 router.post('/image', koaBody(), ctx => {
   if (ctx.is('json')) {
-    const { name } = ctx.request.body
-    if (!name) {
-      ctx.throw(400, 'expected payload: { name: "image_name" }')
+    const { url } = ctx.request.body
+    if (!url) {
+      ctx.throw(400, 'expected payload: { url: "image_url" }')
     }
+    const imageName = url.split('/').pop()
     try {
-      fs.unlinkSync(`${IMAGES_DIR}/${name}`, err => {
+      fs.unlinkSync(`${IMAGES_DIR}/${imageName}`, err => {
         if (err) {
-          ctx.throw(500, `error while deleting file "${name}"`)
+          ctx.throw(500, 'error while deleting file')
         }
       })
     } catch (e) {
       if (e.code !== 'ENOENT') {
-        ctx.throw(500, `error while deleting file "${name}"`)
+        ctx.throw(500, 'error while deleting file')
       }
     }
     ctx.status = 200
