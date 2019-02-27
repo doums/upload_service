@@ -15,7 +15,7 @@ HTTP PUT host/image
 Content-Type: multipart/form-data
 ```
 
-delete (`POST` method will be replaced by `DELETE` as soon as [koa-body](https://github.com/dlau/koa-body) will parse the request body with `DELETE`)
+delete (`POST` method will be replaced by `DELETE` as soon as [koa-body](https://github.com/dlau/koa-body) will parse the request body on `DELETE` request)
 ```
 HTTP POST host/image
 Content-Type: application/json
