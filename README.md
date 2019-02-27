@@ -1,6 +1,6 @@
-### micro service image
+### imaKoa
 
- :mount_fuji: A simple micro service built with [Koa](https://koajs.com/), for image upload and serving  :mount_fuji:
+ :mount_fuji:   a simple micro service built with [Koa](https://koajs.com/), for image upload and serving    :mount_fuji:
 
 **Usage**
 
