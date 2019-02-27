@@ -67,7 +67,6 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
     const reader = fs.createReadStream(file.path)
     const stream = fs.createWriteStream(path.join(IMAGES_DIR, imageName))
     reader.pipe(stream)
-    console.log('uploading %s -> %s', file.name, stream.path)
   } catch (e) {
     ctx.throw(500, `error occurred while uploading: ${e.message()}"`)
   }
