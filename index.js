@@ -5,6 +5,7 @@ import koaBody from 'koa-body'
 import serve from 'koa-static'
 import fs from 'fs'
 import path from 'path'
+import uuidv4 from 'uuid/v4'
 
 const IMAGES_DIR = path.join(__dirname, './images')
 
@@ -59,15 +60,17 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
   if (!file.type.startsWith('image/')) {
     ctx.throw(415, 'images only!')
   }
+  const imageName = `${uuidv4()}.${file.type.slice(6)}`
   try {
     const reader = fs.createReadStream(file.path)
-    const stream = fs.createWriteStream(path.join(IMAGES_DIR, file.name))
+    const stream = fs.createWriteStream(path.join(IMAGES_DIR, imageName))
     reader.pipe(stream)
     console.log('uploading %s -> %s', file.name, stream.path)
   } catch (e) {
     ctx.throw(500, `error occurred while uploading: ${e.message()}"`)
   }
   ctx.status = 201
+  ctx.body = imageName
 })
 
 /* todo replace by http method DELETE (router.del(...)) when koa-body will have fixed it
