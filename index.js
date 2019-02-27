@@ -46,6 +46,10 @@ router.options('/', ctx => {
   ctx.status = 200
 })
 
+// GET /image_name, get an image
+app.use(serve(IMAGES_DIR))
+
+// PUT /image, upload an image
 router.put('/image', koaBody({ multipart: true }), ctx => {
   const files = ctx.request.files
   if (!files) {
@@ -55,10 +59,14 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
   if (!file.type.startsWith('image/')) {
     ctx.throw(415, 'images only!')
   }
-  const reader = fs.createReadStream(file.path)
-  const stream = fs.createWriteStream(path.join(IMAGES_DIR, file.name))
-  reader.pipe(stream)
-  console.log('uploading %s -> %s', file.name, stream.path)
+  try {
+    const reader = fs.createReadStream(file.path)
+    const stream = fs.createWriteStream(path.join(IMAGES_DIR, file.name))
+    reader.pipe(stream)
+    console.log('uploading %s -> %s', file.name, stream.path)
+  } catch (e) {
+    ctx.throw(500, `error occurred while uploading: ${e.message()}"`)
+  }
   ctx.status = 201
 })
 
