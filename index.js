@@ -70,7 +70,7 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
     ctx.throw(500, `error occurred while uploading: ${e.message()}"`)
   }
   ctx.status = 201
-  ctx.body = imageName
+  ctx.body = { url: imageName }
 })
 
 /* todo replace by http method DELETE (router.del(...)) when koa-body will have fixed it

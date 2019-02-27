@@ -19,7 +19,7 @@ run for production
 npm run serve
 ```
 
-**Description**
+**API**
 
 get
 ```
@@ -30,6 +30,10 @@ upload (using [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormDa
 ```
 HTTP PUT host/image
 Content-Type: multipart/form-data
+
+response:
+Content-Type: application/json
+body: { url: "image_url" }
 ```
 
 delete (`POST` method will be replaced by `DELETE` as soon as [koa-body](https://github.com/dlau/koa-body) will parse the request body on `DELETE` request)
