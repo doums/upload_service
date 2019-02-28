@@ -4,6 +4,11 @@
 
 #### Usage
 
+install
+```
+npm i
+```
+
 run for development
 ```
 npm start
