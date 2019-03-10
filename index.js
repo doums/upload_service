@@ -52,7 +52,27 @@ router.options('/', ctx => {
 // GET /image_name, get an image
 app.use(serve(IMAGES_DIR))
 
-// PUT /image, upload an image
+const storeFS = (filePath, destPath) => {
+  return new Promise((resolve, reject) => {
+    const readStream = fs.createReadStream(filePath)
+    const writeStream = fs.createWriteStream(destPath)
+    writeStream.on('error', error => {
+      writeStream.destroy()
+      fs.unlinkSync(destPath)
+      reject(error)
+    })
+    readStream
+      .on('error', error => {
+        fs.unlinkSync(destPath)
+        writeStream.destroy()
+        reject(error)
+      })
+      .pipe(writeStream)
+      .on('finish', () => resolve())
+  })
+}
+
+// PUT /image multipart/form-data
 router.put('/image', koaBody({ multipart: true }), ctx => {
   const files = ctx.request.files
   if (!files) {
@@ -64,9 +84,7 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
   }
   const imageName = `${uuidv4()}.${file.type.slice(6)}`
   try {
-    const reader = fs.createReadStream(file.path)
-    const stream = fs.createWriteStream(path.join(IMAGES_DIR, imageName))
-    reader.pipe(stream)
+    storeFS(file.path, path.join(IMAGES_DIR, imageName))
   } catch (e) {
     ctx.throw(500, `error occurred while uploading: ${e.message()}"`)
   }
@@ -74,9 +92,8 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
   ctx.body = { url: `${HOSTNAME}:${PORT}/${imageName}` }
 })
 
-/* todo replace by http method DELETE (router.del(...)) when koa-body will have fixed it
-    see https://github.com/dlau/koa-body/issues/133 */
-router.post('/image', koaBody(), ctx => {
+// DELETE /image application/json
+router.del('/image', koaBody({ parsedMethods: ['DELETE'] }), ctx => {
   if (ctx.is('json')) {
     const { url } = ctx.request.body
     if (!url) {
