@@ -16,7 +16,7 @@
     "koa-body": "^4.1.0",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "uuid": "^3.3.2"
+    "shortid": "^2.2.14"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

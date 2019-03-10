@@ -5,7 +5,7 @@ import koaBody from 'koa-body'
 import serve from 'koa-static'
 import fs from 'fs'
 import path from 'path'
-import uuidv4 from 'uuid/v4'
+import shortid from 'shortid'
 
 const IMAGES_DIR = path.join(__dirname, './images')
 const HOSTNAME = 'http://localhost'
@@ -82,7 +82,7 @@ router.put('/image', koaBody({ multipart: true }), ctx => {
   if (!file.type.startsWith('image/')) {
     ctx.throw(415, 'images only!')
   }
-  const imageName = `${uuidv4()}.${file.type.slice(6)}`
+  const imageName = `${shortid.generate()}.${file.type.slice(6)}`
   try {
     storeFS(file.path, path.join(IMAGES_DIR, imageName))
   } catch (e) {
