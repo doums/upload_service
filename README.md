@@ -41,9 +41,9 @@ Content-Type: application/json
 body: { url: "image_url" }
 ```
 
-* delete (`POST` method will be replaced by `DELETE` as soon as [koa-body](https://github.com/dlau/koa-body) will parse the request body on `DELETE` request)
+* delete
 ```
-HTTP POST host/image
+HTTP DELETE host/image
 Content-Type: application/json
 body: { url: "image_url" }
 ```
@@ -75,7 +75,7 @@ delete an image from its url
 deleteImage = async url => {
   try {
     await fetch('http://localhost:2001/image', {
-      method: 'POST',
+      method: 'DELETE',
       body: JSON.stringify({ url: url }),
       headers: {
         'Content-Type': 'application/json'
