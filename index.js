@@ -120,4 +120,4 @@ router.del('/image', koaBody({ parsedMethods: ['DELETE'] }), ctx => {
 app
   .use(router.routes())
   .use(router.allowedMethods())
-  .listen(PORT, () => console.log(`listening on port ${PORT}`))
+  .listen(PORT, () => console.log(`🗻 imaKoa ready on port ${PORT}`))
