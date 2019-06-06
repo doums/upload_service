@@ -1,4 +1,5 @@
-import '@babel/polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import Koa from 'koa'
 import Router from 'koa-router'
 import koaBody from 'koa-body'
